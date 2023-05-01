@@ -1,4 +1,4 @@
-#include "clib/string/cstring.h"
+#include "clib/cstring.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -127,6 +127,8 @@ cstring_t* cstring_append_front_format(cstring_t* cs, const char* format, ...)
     va_start(arg, format);
 
     size_t str_len = vsnprintf(NULL, 0, format, arg);
+    va_end(arg);
+
     size_t len = str_len + cs->length;
     size_t size = len + 1;
 
@@ -137,6 +139,8 @@ cstring_t* cstring_append_front_format(cstring_t* cs, const char* format, ...)
     }
 
     char* data = (char*)malloc(cs->capacity);
+
+    va_start(arg, format);
 
     size_t tmp_len = vsprintf(data, format, arg);
     strcpy(data + tmp_len, cs->data);
@@ -210,6 +214,8 @@ cstring_t* cstring_append_back_format(cstring_t* cs, const char* format, ...)
     va_start(arg, format);
 
     size_t str_len = vsnprintf(NULL, 0, format, arg);
+    va_end(arg);
+
     size_t len = str_len + cs->length;
     size_t size = len + 1;
 
@@ -224,10 +230,13 @@ cstring_t* cstring_append_back_format(cstring_t* cs, const char* format, ...)
         char *data = (char*)malloc(capacity);
         memcpy(data, cs->data, cs->length);
         cs->capacity = capacity;
+        free(cs->data);
         cs->data = data;
     }
 
-    vsprintf(cs->data, format, arg);
+    va_start(arg, format);
+
+    vsprintf(cs->data + cs->length, format, arg);
     cs->length = len;
     cs->data[len] = '\0';
 

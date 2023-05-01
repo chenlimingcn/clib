@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "clib/rqueue/rqueue.h"
+#include "clib/rqueue.h"
 
-int main(int argc, char* argv[])
+void rqueue_test()
 {
 	rqueue_t q;
 	rqdata_t data;
@@ -16,7 +16,5 @@ int main(int argc, char* argv[])
 	rqueue_read(&q, &data);
 
 	rqueue_print(&q);
-
-	return 0;
 }
 
